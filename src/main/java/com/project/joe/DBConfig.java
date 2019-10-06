@@ -1,8 +1,11 @@
 package com.project.joe;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -14,12 +17,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories
 @EnableSpringDataWebSupport
 public class DBConfig {
+
+    @Autowired
+    private Environment env;
 
     @Value("${db.driver}")
     private String driverClassName;
@@ -31,13 +39,29 @@ public class DBConfig {
     private String password;
 
 
-    @Bean
+
+    @Profile("dev")
+    @Bean("dataSource")
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName(driverClassName);
         ds.setUrl(url);
         ds.setUsername(username);
         ds.setPassword(password);
+        return ds;
+    }
+
+    @Profile("prod")
+    @Bean("dataSource")
+    public DataSource dataSourceProd() throws URISyntaxException {
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        URI dbUri = new URI(env.getProperty("CLEARDB_DATABASE_URL"));
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+        ds.setUsername(username);
+        ds.setPassword(password);
+        ds.setUrl(dbUrl);
         return ds;
     }
 
