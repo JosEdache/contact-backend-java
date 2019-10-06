@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "firstName": "Edache",
+      "lastName": null,
+      "email": null,
+      "address": null,
+      "imageUrl": null,
+      "phoneNumber": "08068790779"
+    }
+  ],
+  "pageable": {
+    "sort": {
+      "sorted": false,
+      "unsorted": true,
+      "empty": true
+    },
+    "pageNumber": 0,
+    "pageSize": 20,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalPages": 1,
+  "totalElements": 1,
+  "numberOfElements": 1,
+  "first": true,
+  "sort": {
+    "sorted": false,
+    "unsorted": true,
+    "empty": true
+  },
+  "size": 20,
+  "number": 0,
+  "empty": false
+}
