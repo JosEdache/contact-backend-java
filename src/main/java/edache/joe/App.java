@@ -1,4 +1,4 @@
-package com.project.joe;
+package edache.joe;
 
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -19,7 +19,7 @@ public class App extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/"};
+        return new String[]{AppConfig.BASE_URL.concat("/*")};
     }
 
     @Override

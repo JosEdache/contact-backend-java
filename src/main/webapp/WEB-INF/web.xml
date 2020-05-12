@@ -6,6 +6,6 @@
          metadata-complete="true">
 
     <error-page>
-        <location>/error</location>
+        <location>/api/error</location>
     </error-page>
 </web-app>

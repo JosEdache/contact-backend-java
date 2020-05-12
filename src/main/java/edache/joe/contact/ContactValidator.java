@@ -1,4 +1,4 @@
-package com.project.joe.contact;
+package edache.joe.contact;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -8,7 +8,9 @@ public class ContactValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return Contact.class.equals(clazz);
+        boolean value = Contact.class.equals(clazz);
+        System.out.println(value);
+        return  value;
     }
 
     @Override

@@ -1,9 +1,10 @@
 plugins {
     id 'java'
     id 'war'
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
-group 'com.project.joe'
+group 'joe.edache'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
@@ -11,6 +12,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+
 
 task stage(dependsOn: ['build', 'clean'])
 war.mustRunAfter clean
@@ -24,12 +26,28 @@ task copyToLib(type: Copy) {
 
 stage.dependsOn(copyToLib)
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.security:spring-security-bom:5.3.1.RELEASE'
+    }
+}
+
 dependencies {
     compile group: 'org.springframework', name: 'spring-webmvc', version: '5.1.9.RELEASE'
+    compile "org.springframework.security:spring-security-web"
+    compile "org.springframework.security:spring-security-config"
+    compile "org.springframework.security:spring-security-oauth2-client:"
+    compile "org.springframework.security:spring-security-oauth2-resource-server"
+    compile "org.springframework.security:spring-security-oauth2-jose"
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.10'
     compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '0.25.2.RELEASE'
-    compile 'com.github.jsimone:webapp-runner:8.5.11.3'
+    compile 'io.jsonwebtoken:jjwt-api:0.11.1'
+    runtime 'io.jsonwebtoken:jjwt-impl:0.11.1',
+            // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+            //'org.bouncycastle:bcprov-jdk15on:1.60',
+            'io.jsonwebtoken:jjwt-jackson:0.11.1' // or 'io.jsonwebtoken:jjwt-gson:0.11.1' for gson
+//    compile 'com.github.jsimone:webapp-runner:8.5.11.3'
     providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
     implementation 'org.springframework.data:spring-data-jpa:2.1.10.RELEASE'
     implementation 'org.hibernate:hibernate-agroal:5.4.5.Final'

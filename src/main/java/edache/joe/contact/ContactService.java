@@ -1,11 +1,10 @@
-package com.project.joe.contact;
+package edache.joe.contact;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,7 +28,7 @@ public class ContactService {
     @Autowired
     ServletRequest servletRequest;
 
-    void storeContact(Contact contact, BindingResult bindingResult) {
+    public void storeContact(Contact contact, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             FieldError fieldError = bindingResult.getFieldError();
             if (fieldError != null) {
@@ -42,12 +41,12 @@ public class ContactService {
         repository.save(contact);
     }
 
-    Page<Contact> getContacts(Pageable pageable, PagedResourcesAssembler assembler) {
+    public Page<Contact> getContacts(Pageable pageable, PagedResourcesAssembler assembler) {
         return repository.findAll(pageable);
     }
 
 
-    void deleteContact(int uid) {
+    public void deleteContact(int uid) {
         try {
             repository.deleteById(uid);
         } catch (IllegalArgumentException ex) {
@@ -55,7 +54,7 @@ public class ContactService {
         }
     }
 
-    void storeImage(MultipartFile file, String username) {
+    public void storeImage(MultipartFile file, String username) {
         if (file.isEmpty()) {
             throw new MultipartException(
                     messageSource.getMessage("file.isEmpty", null, null));

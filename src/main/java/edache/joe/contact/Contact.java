@@ -1,18 +1,16 @@
-package com.project.joe.contact;
+package edache.joe.contact;
 
 
 import lombok.Data;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity(name = "contacts")
+@Access(AccessType.PROPERTY)
 public class Contact {
     @Getter(onMethod_ = {@GeneratedValue(strategy = GenerationType.IDENTITY), @Id})
-    private Integer uid;
+    private Integer id;
     private String phoneNumber, firstName, lastName, email, address, imageUrl;
 }

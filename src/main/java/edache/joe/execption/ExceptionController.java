@@ -1,11 +1,12 @@
-package com.project.joe.execption;
+package edache.joe.execption;
 
-import com.project.joe.contact.ContactException;
-import com.project.joe.contact.ContactValidator;
+import edache.joe.contact.ContactException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,13 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class ExceptionController {
 
+    public static final String ERROR_URL = "/error";
 
     @ExceptionHandler
     public ResponseEntity<ErrorMessage> invalidContact(ContactException ex) {
         return error(HttpStatus.NOT_ACCEPTABLE, "Invalid contact", ex.getMessage());
     }
 
-    @RequestMapping("/error")
+    @RequestMapping(ERROR_URL)
     public ResponseEntity<ErrorMessage> containerError(HttpServletRequest request) {
         Integer code = (Integer) request.getAttribute("javax.servlet.error.status_code");
         Object msg = request.getAttribute("javax.servlet.error.message");
@@ -29,11 +31,6 @@ public class ExceptionController {
                 msg
         );
 
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.addValidators(new ContactValidator());
     }
 
     public ResponseEntity<ErrorMessage> error(HttpStatus httpStatus, String error, Object message) {

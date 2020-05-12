@@ -1,4 +1,4 @@
-package com.project.joe;
+package edache.joe.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +23,9 @@ import java.net.URISyntaxException;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories
+@EnableJpaRepositories("edache.joe")
 @EnableSpringDataWebSupport
-public class DBConfig {
+public class DatabaseConfig {
 
     @Autowired
     private Environment env;
@@ -38,6 +38,8 @@ public class DBConfig {
     private String username;
     @Value("${db.password}")
     private String password;
+    @Value("${entity.package-to-scan}")
+    private String pkgToScan;
 
 
 
@@ -77,7 +79,7 @@ public class DBConfig {
         em.setJpaVendorAdapter(jpaVendorAdapter);
         em.setJpaDialect(jpaVendorAdapter.getJpaDialect());
         em.setDataSource(dataSource);
-        em.setPackagesToScan("com.project.joe");
+        em.setPackagesToScan(pkgToScan);
         return em;
     }
 

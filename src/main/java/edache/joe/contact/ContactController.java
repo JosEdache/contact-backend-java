@@ -1,21 +1,27 @@
-package com.project.joe.contact;
+package edache.joe.contact;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+
 @RestController
-@RequestMapping("contact")
+@RequestMapping(ContactController.BASE_URL)
+@RequiredArgsConstructor
 public class ContactController {
 
-    @Autowired
-    ContactService service;
+    public static final String BASE_URL = "/contacts";
+    public static final String IMAGE_UPLOAD_URL = "upload";
+
+    private final ContactService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,7 +44,7 @@ public class ContactController {
         service.deleteContact(uid);
     }
 
-    @PostMapping("upload")
+    @PostMapping(IMAGE_UPLOAD_URL)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void uploadContactImage(
             @RequestParam String username,
@@ -47,4 +53,8 @@ public class ContactController {
         service.storeImage(file, username);
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.addValidators(new ContactValidator());
+    }
 }

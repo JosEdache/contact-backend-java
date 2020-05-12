@@ -1,4 +1,4 @@
-package com.project.joe.execption;
+package edache.joe.execption;
 
 import org.springframework.http.HttpStatus;
 
