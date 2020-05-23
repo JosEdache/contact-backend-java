@@ -1,10 +1,9 @@
-package edache.joe.security.filter;
+package edache.joe.security.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edache.joe.AppConfig;
 import edache.joe.security.JwtTokenProvider;
 import edache.joe.user.controller.payload.AuthenticationResponse;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -35,9 +34,7 @@ final public class CustomUsernamePasswordAuthenticationFilter extends UsernamePa
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-
-        final String token = jwtTokenProvider.signJwt(authResult);
-        val authResponse = new AuthenticationResponse(HttpStatus.OK, token);
+        val authResponse = AuthenticationResponse.of(jwtTokenProvider.signJwt(authResult));
         mapper.writerWithDefaultPrettyPrinter().writeValue(response.getWriter(), authResponse);
 //        response.setHeader(HttpHeaders.AUTHORIZATION, jwtTokenProvider.addBearerToJws(token));
     }

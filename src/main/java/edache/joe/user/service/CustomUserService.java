@@ -1,17 +1,15 @@
 package edache.joe.user.service;
 
 import edache.joe.security.JwtTokenProvider;
-import edache.joe.user.AuthProvider;
-import edache.joe.user.User;
+import edache.joe.security.oauth2.AuthProvider;
 import edache.joe.user.UserRepository;
-import edache.joe.user.UserRole;
 import edache.joe.user.controller.payload.AuthenticationResponse;
 import edache.joe.user.controller.payload.LoginPayload;
 import edache.joe.user.controller.payload.RegistrationPayload;
+import edache.joe.execption.AuthenticationException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,10 +27,15 @@ public class CustomUserService implements UserService {
     final private AuthenticationManager authenticationManager;
 
     public AuthenticationResponse loginUserAuthenticationManger(@NonNull LoginPayload payload) {
-        val authUser =
-                authenticationManager
-                        .authenticate(new UsernamePasswordAuthenticationToken(payload.getUsername(), payload.getPassword()));
-        return new AuthenticationResponse(HttpStatus.OK, jwtTokenProvider.signJwt(authUser));
+       try {
+           val authUser =
+                   authenticationManager
+                           .authenticate(new UsernamePasswordAuthenticationToken(payload.getUsername(), payload.getPassword()));
+           return AuthenticationResponse.of(jwtTokenProvider.signJwt(authUser));
+       }
+       catch (Exception ex) {
+           throw new AuthenticationException();
+       }
     }
 
     @Override
@@ -40,30 +43,29 @@ public class CustomUserService implements UserService {
         val username = payload.getUsername();
         val user = userRepository.findByEmailOrPhoneNumber(username, username);
 
-        if (user != null &&
-                passwordEncoder.matches(payload.getPassword(), user.getPassword())) {
-            return new AuthenticationResponse(HttpStatus.OK, jwtTokenProvider.signJwt(user));
+        if (user == null ||
+                !passwordEncoder.matches(payload.getPassword(), user.getPassword())) {
+            throw new AuthenticationException();
         }
-        return new AuthenticationResponse(HttpStatus.BAD_REQUEST);
+        return AuthenticationResponse.of(jwtTokenProvider.signJwt(user));
     }
 
 
     @Override
     public AuthenticationResponse registerUser(@NonNull RegistrationPayload payload) {
-        if (!userRepository
+        if (userRepository
                 .existsByEmailAndEmailIsNotNullOrPhoneNumberAndPhoneNumberIsNotNull(
                         payload.getEmail(), payload.getPhoneNumber())) {
-            val uuid = UUID.randomUUID().toString();
-            val user = payload.createUser();
-            user.setId(uuid);
-            user.setProviderId(uuid);
-            user.setProvider(AuthProvider.LOCAL);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-            userRepository.save(user);
-
-            return new AuthenticationResponse(HttpStatus.CREATED, jwtTokenProvider.signJwt(user));
+            throw new AuthenticationException();
         }
-        return new AuthenticationResponse(HttpStatus.BAD_REQUEST);
+        val uuid = UUID.randomUUID().toString();
+        val user = payload.createUser();
+        user.setId(uuid);
+        user.setProviderId(uuid);
+        user.setProvider(AuthProvider.local);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepository.save(user);
+        return AuthenticationResponse.of( jwtTokenProvider.signJwt(user));
     }
 }

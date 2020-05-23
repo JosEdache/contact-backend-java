@@ -18,7 +18,7 @@ public class CustomUserPrincipal implements UserDetails {
 
     static CustomUserPrincipal from(User user) {
         return new CustomUserPrincipal(
-                user.getId().toString(),
+                user.getId(),
                 user.getName(),
                 user.getPassword(),
                 user.getRole().name(),

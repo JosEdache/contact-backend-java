@@ -1,9 +1,7 @@
 package edache.joe.security;
 
-import edache.joe.contact.ContactController;
-import edache.joe.security.filter.CustomUsernamePasswordAuthenticationFilter;
+import edache.joe.security.user.CustomUsernamePasswordAuthenticationFilter;
 import edache.joe.security.oauth2.OAuth2ResourceServerAuthenticationManager;
-import edache.joe.user.controller.UserController;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
 import java.util.ArrayList;
@@ -42,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .addFilter(new CustomUsernamePasswordAuthenticationFilter(authenticationManager(), jwtService()))
+//                .oauth2Login()
+//                .and()
 //                .authorizeRequests()
 //                .mvcMatchers(
 //                        UserController.BASE_URL.concat(UserController.SIGN_UP_URL)).permitAll()

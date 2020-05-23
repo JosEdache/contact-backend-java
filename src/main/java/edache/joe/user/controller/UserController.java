@@ -1,11 +1,9 @@
 package edache.joe.user.controller;
 
 
-import edache.joe.user.User;
 import edache.joe.user.controller.payload.AuthenticationResponse;
 import edache.joe.user.controller.payload.LoginPayload;
 import edache.joe.user.controller.payload.RegistrationPayload;
-import edache.joe.user.service.CustomUserService;
 import edache.joe.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +28,11 @@ public class UserController {
     @PostMapping(LOGIN_URL)
     public ResponseEntity<AuthenticationResponse> loginUser(@RequestBody LoginPayload payload) {
         AuthenticationResponse response = userService.loginUser(payload);
-        return ResponseEntity.status(response.getCode()).body(response);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(SIGN_UP_URL)
     public ResponseEntity<AuthenticationResponse> signUpUser(@RequestBody RegistrationPayload payload) {
-        AuthenticationResponse response = userService.registerUser(payload);
-        return ResponseEntity.status(response.getCode()).body(response);
+        return ResponseEntity.ok(userService.registerUser(payload));
     }
 }
