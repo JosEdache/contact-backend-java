@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("contact")
+@CrossOrigin
 public class ContactController {
 
     @Autowired
