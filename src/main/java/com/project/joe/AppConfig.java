@@ -48,7 +48,7 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String[] allowedOrigins = {"http://localhost:3000", "https://kind-engelbart-ec343a.netlify.com"};
+        String[] allowedOrigins = {"http://localhost:3000", "https://kind-engelbart-ec343a.netlify.app"};
         String[] allowedMethods = {"GET", "POST", "PUT", "DELETE"};
 
         registry.addMapping("/**")
